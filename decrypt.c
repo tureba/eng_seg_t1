@@ -12,24 +12,41 @@ int main (int argc, char ** argv, char ** envp)
 		return 1;
 
 	int salto = argv[1][0] + argv[1][2] + argv[1][4] - '1' * 3;
-	unsigned char buffer;
+	unsigned char buffer, vogais[5];
+	for (int i = 0; i < 5; i++)
+		switch (argv[1][i]) {
+			case '1':
+				vogais[i] = 'a';
+				break;
+			case '2':
+				vogais[i] = 'e';
+				break;
+			case '3':
+				vogais[i] = 'i';
+				break;
+			case '4':
+				vogais[i] = 'o';
+				break;
+			case '5':
+				vogais[i] = 'u';
+				break;
+		}
 
 	while (read(0, &buffer, 1)) {
 		switch (buffer) {
+			case '0':
 			case '1':
-				buffer = 'a';
-				break;
 			case '2':
-				buffer = 'e';
-				break;
 			case '3':
-				buffer = 'i';
-				break;
 			case '4':
-				buffer = 'o';
+				buffer = vogais[buffer - '0'];
 				break;
 			case '5':
-				buffer = 'u';
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				buffer = vogais[buffer - '5'] + ('A' - 'a');
 				break;
 			default:
 				if (isalpha(buffer)) {
