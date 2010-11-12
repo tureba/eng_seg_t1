@@ -1,12 +1,214 @@
 \documentclass[12pt]{article}
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage[portuges]{babel}
 \usepackage{hyperref}
 
-\title{Relatório do Trabalho de Engenharia de Segurança}
-\author{Arthur Nascimento \and Gabriel Lima}
+\title{Relatório do Trabalho de\\Engenharia de Segurança\vspace{3cm}}
+\author{
+	\begin{tabular}{lcr}
+		Arthur Nascimento & -- & nºUSP 5634455\\
+		Gabriel Lima & -- & nºUSP 5744830\\
+	\end{tabular}
+}
 
 \begin{document}
+
 \maketitle
+\pagebreak
+
+\section{Algoritmo de Encriptação}
+
+O algoritmo escolhido para este trabalho é similar à clássica cifra de César. Nesta cifra conhecida,
+cada letra do alfabeto é substituída por uma que está a uma certa distância da original. No nosso algoritmo,
+isso é feito para as consoantes e o deslocamento é a soma do primeiro, terceiro e quinto dígitos da chave.
+As vogais são substituídas por um número (menos um) na ordem que aparecem na chave, ou seja, para uma chave
+23154, a letra '\emph{a}' é substituída por 1, a letra '\emph{e}' é substituída por 2, '\emph{i}' por 0,
+'\emph{o}' por 4 e '\emph{u}' por 3. Para as letras maiúsculas soma-se 5 ao número ao fazer a substituição.
+Por este motivo, o nosso algoritmo não encripta corretamente números.
+
+\section{Instruções}
+
+Foram feitos dois programas que implementam o algoritmo. O programa que encripta a mensagem se chama \emph{crypt}
+e o que decripta a mensagem se chama \emph{decrypt}. O código pode ser encontrado em
+\url{http://github.com/tureba/eng\_seg\_t1}.
+
+\subsection{Compilação}
+
+A compilação dos programas, assim como da documentação, foi simplificada com o uso da ferramenta \emph{make},
+como especificada no padrão {POSIX.1-2008} em \url{http://www.opengroup.org/onlinepubs/9699919799/}. O código
+está no padrão mais recente da linguagem C, conhecido como ISO C99
+(\url{http://www.open-std.org/JTC1/SC22/WG14/www/standards}), então exige um compilador suficientemente
+atual. Como a maioria dos compiladores suportam este padrão, isso não restringe a adoção do software. Para
+habilitar este suporte no GCC (\url{http://gcc.gnu.org/}), usa-se a opção \emph{-std=c99}.
+
+Para se compilar os programas, digite:
+
+\begin{verbatim}
+	make progs
+\end{verbatim}
+
+Para compilar este relatório:
+
+\begin{verbatim}
+	make relatorio.pdf
+\end{verbatim}
+
+Para compilar tudo:
+
+\begin{verbatim}
+	make
+\end{verbatim}
+
+\subsection{Execução}
+
+Seguindo a filosofia do UNIX\textregistered, os programas produzidos são filtros de dados e, portanto, lêem
+da entrada padrão, fazem o seu processamento e então escrevem na saída padrão. Estes programas recebem exatamente
+um argumento de linha de comando que é a chave de encriptação/decriptação.
+
+Desta forma, para se encriptar um arquivo de texto \texttt{texto.txt} com uma chave hipotética 34521 executa-se:
+
+\begin{verbatim}
+	./crypt 34521 <texto.txt
+\end{verbatim}
+
+O texto encriptado será mostrado no terminal. Pode-se salvar o resultado em \texttt{resultado.txt}:
+
+\begin{verbatim}
+	./crypt 34521 <texto.txt >resultado.txt
+\end{verbatim}
+
+Para se testar a encriptação e a decriptação é possível canalizar os dados desta forma:
+
+\begin{verbatim}
+	./crypt 34521 <texto.txt | ./decrypt 34521
+\end{verbatim}
+
+O texto deve ser mostrado no terminal plenamente legível.
+
+
+\section{Resultados com a Ferramenta de Criptoanálise}
+
+Escolhemos uma ferramente de criptoanálise com interface web, encontrada no site da
+Yellowpipe Internet Services (\url{http://www.yellowpipe.com/yis/tools/encrypter/}).
+Esta ferramenta foi escolhida por ser de fácil utilização e entendimento, além de contar com
+métodos de força bruta que eram suficientemente poderosos para decifrar o nosso algoritmo.
+
+Utilizamos os seguintes mensagens originais:
+
+\begin{verbatim}
+	Engenharia de seguranca
+	Arthur Nascimento
+	Gabriel Luis
+\end{verbatim}
+
+Que, ao serem criptografados com a chave 14235, se tornaram, respectivamente:
+
+\begin{verbatim}
+	8ib3ic0m10 y3 n3b4m0ix
+	5moc4m S0nx1h3io2
+	L0wm13g Q41n
+\end{verbatim}
+
+A ferramenta web permite que escolha certos algoritmos de criptografia para tentar descriptografar
+a mensagem. Após uma tentativa, uma série de possíveis mensagens é exibida. Por meio de inspeção visual
+é possível dizer qual é a mensagem, se houve ou não algum sucesso, ou o quão próximo está disso. Para
+nosso exemplo, utilizamos a opção Caesar Bruteforce. A saída gerada pela ferramenta foi, para cada um
+dos exemplos, respectivamente:
+
+Exemplo 1:
+
+\begin{verbatim}
+	ROT-1: 8jc3jd0n10 z3 o3c4n0jy0
+	ROT-2: 8kd3ke0o10 a3 p3d4o0kz0
+	ROT-3: 8le3lf0p10 b3 q3e4p0la0
+	ROT-4: 8mf3mg0q10 c3 r3f4q0mb0
+	ROT-5: 8ng3nh0r10 d3 s3g4r0nc0
+	ROT-6: 8oh3oi0s10 e3 t3h4s0od0
+	ROT-7: 8pi3pj0t10 f3 u3i4t0pe0
+	ROT-8: 8qj3qk0u10 g3 v3j4u0qf0
+	ROT-9: 8rk3rl0v10 h3 w3k4v0rg0
+	ROT-10: 8sl3sm0w10 i3 x3l4w0sh0
+	ROT-11: 8tm3tn0x10 j3 y3m4x0ti0
+	ROT-12: 8un3uo0y10 k3 z3n4y0uj0
+	ROT-13: 8vo3vp0z10 l3 a3o4z0vk0
+	ROT-14: 8wp3wq0a10 m3 b3p4a0wl0
+	ROT-15: 8xq3xr0b10 n3 c3q4b0xm0
+	ROT-16: 8yr3ys0c10 o3 d3r4c0yn0
+	ROT-17: 8zs3zt0d10 p3 e3s4d0zo0
+	ROT-18: 8at3au0e10 q3 f3t4e0ap0
+	ROT-19: 8bu3bv0f10 r3 g3u4f0bq0
+	ROT-20: 8cv3cw0g10 s3 h3v4g0cr0
+	ROT-21: 8dw3dx0h10 t3 i3w4h0ds0
+	ROT-22: 8ex3ey0i10 u3 j3x4i0et0
+	ROT-23: 8fy3fz0j10 v3 k3y4j0fu0
+	ROT-24: 8gz3ga0k10 w3 l3z4k0gv0
+	ROT-25: 8ha3hb0l10 x3 m3a4l0hw0
+\end{verbatim}
+
+Exemplo 2:
+
+\begin{verbatim}
+	ROT-1: 5npd4n T0oy1i3jp2
+	ROT-2: 5oqe4o U0pz1j3kq2
+	ROT-3: 5prf4p V0qa1k3lr2
+	ROT-4: 5qsg4q W0rb1l3ms2
+	ROT-5: 5rth4r X0sc1m3nt2
+	ROT-6: 5sui4s Y0td1n3ou2
+	ROT-7: 5tvj4t Z0ue1o3pv2
+	ROT-8: 5uwk4u A0vf1p3qw2
+	ROT-9: 5vxl4v B0wg1q3rx2
+	ROT-10: 5wym4w C0xh1r3sy2
+	ROT-11: 5xzn4x D0yi1s3tz2
+	ROT-12: 5yao4y E0zj1t3ua2
+	ROT-13: 5zbp4z F0ak1u3vb2
+	ROT-14: 5acq4a G0bl1v3wc2
+	ROT-15: 5bdr4b H0cm1w3xd2
+	ROT-16: 5ces4c I0dn1x3ye2
+	ROT-17: 5dft4d J0eo1y3zf2
+	ROT-18: 5egu4e K0fp1z3ag2
+	ROT-19: 5fhv4f L0gq1a3bh2
+	ROT-20: 5giw4g M0hr1b3ci2
+	ROT-21: 5hjx4h N0is1c3dj2
+	ROT-22: 5iky4i O0jt1d3ek2
+	ROT-23: 5jlz4j P0ku1e3fl2
+	ROT-24: 5kma4k Q0lv1f3gm2
+	ROT-25: 5lnb4l R0mw1g3hn2
+\end{verbatim}
+
+Exemplo 3:
+
+\begin{verbatim}
+	ROT-1: M0xn13h R41o
+	ROT-2: N0yo13i S41p
+	ROT-3: O0zp13j T41q
+	ROT-4: P0aq13k U41r
+	ROT-5: Q0br13l V41s
+	ROT-6: R0cs13m W41t
+	ROT-7: S0dt13n X41u
+	ROT-8: T0eu13o Y41v
+	ROT-9: U0fv13p Z41w
+	ROT-10: V0gw13q A41x
+	ROT-11: W0hx13r B41y
+	ROT-12: X0iy13s C41z
+	ROT-13: Y0jz13t D41a
+	ROT-14: Z0ka13u E41b
+	ROT-15: A0lb13v F41c
+	ROT-16: B0mc13w G41d
+	ROT-17: C0nd13x H41e
+	ROT-18: D0oe13y I41f
+	ROT-19: E0pf13z J41g
+	ROT-20: F0qg13a K41h
+	ROT-21: G0rh13b L41i
+	ROT-22: H0si13c M41j
+	ROT-23: I0tj13d N41k
+	ROT-24: J0uk13e O41l
+	ROT-25: K0vl13f P41m
+\end{verbatim}
+
+Note que, para todos os exemplos, a ferramenta chega muito próxima do resultado verdadeiro através do
+algoritmo ROT5, faltando apenas substituir os números pelas vogais correspondentes e poucas consoantes.
+Portanto, apenas a força bruta, neste caso, seria o suficiente para quebrar a criptografia, bastaria uma
+pequena inspeção para saber qual é a verdadeira mensagem.
 
 \end{document}

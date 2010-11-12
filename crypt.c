@@ -1,15 +1,33 @@
+/*
+	Primeiro Trabalho Prático de Engenharia de Segurança
+	--- Programa de encriptação de dados
+
+	Autores:
+	-	Arthur Nascimento - nºUSP 5634455
+	-	Gabriel Lima      - nºUSP 5744830
+
+ */
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
 
+void help(char * arg0)
+{
+	fprintf(stderr, "uso: %s <chave>\n", arg0);
+	fprintf(stderr, "\t<chave>: os números 1 a 5\n");
+	exit(1);
+}
+
 int main (int argc, char ** argv, char ** envp)
 {
 	if (argc < 2)
-		return 1;
+		help(argv[0]);
 
 	if (strlen(argv[1]) != 5)
-		return 1;
+		help(argv[0]);
 
 	int salto = argv[1][0] + argv[1][2] + argv[1][4] - '1' * 3;
 	unsigned char buffer;

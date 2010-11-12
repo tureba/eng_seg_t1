@@ -1,10 +1,10 @@
 CFLAGS=-pipe -std=c99 -O2
 
+all: progs doc
+
 progs: crypt decrypt
 
 doc: relatorio.pdf
-
-all: progs doc
 
 crypt: crypt.c
 
